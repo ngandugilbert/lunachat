@@ -16,6 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 
 public class ChatController implements Initializable {
     private User user;
@@ -24,7 +28,11 @@ public class ChatController implements Initializable {
     private ListView<RemoteDevice> serverList;
 
     @FXML
-    private Label currentUser;
+    private Circle avatar;
+
+
+    @FXML
+    private MenuButton profile;
 
     private LinkedList<RemoteDevice> devices = new LinkedList<>();
 
@@ -43,34 +51,38 @@ public class ChatController implements Initializable {
     }
 
     @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
+    public void initialize(URL url, ResourceBundle bundle) {
+
+        // setting up the avatar
+        Image avatarImage = new Image("/Views/assets/login.png");
+        
+        avatar.setFill(new ImagePattern(avatarImage));
+
+
         this.user = Authentication.getLoggedUser();
-        currentUser.setText(user.getName());
+        profile.setText(user.getName());
         fetchDevices();
 
         // How to change the style of the cell
-        serverList.setCellFactory(list->new ListCell<RemoteDevice>(){
+        serverList.setCellFactory(list -> new ListCell<RemoteDevice>() {
             @Override
-            protected void updateItem(RemoteDevice item, boolean empty){
+            protected void updateItem(RemoteDevice item, boolean empty) {
                 super.updateItem(item, empty);
-                if(empty || item==null){
+                if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                     getStyleClass().remove(".list-cell");
-                }
-                else{
+                } else {
                     try {
                         setText(item.getFriendlyName(false));
                         getStyleClass().add(".list-cell");
                     } catch (IOException e) {
-                    //    Handle this bro
+                        // Handle this bro
                     }
                 }
             }
         });
         serverList.getItems().addAll(devices);
     }
-
-    
 
 }
