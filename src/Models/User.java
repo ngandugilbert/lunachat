@@ -9,6 +9,18 @@ public class User implements Serializable {
     private String password;
     private LinkedList<Chat> chats = new LinkedList<>();
     private boolean isLoggedin = false;
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public User() {
+    }
 
     public User(String name, String username, String password) {
         this.name = name;

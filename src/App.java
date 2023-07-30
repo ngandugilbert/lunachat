@@ -1,5 +1,3 @@
-
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,11 +14,12 @@ public class App extends Application {
 
         // create a scene
         scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("Views/style/style.css").toExternalForm());
         stage.setMaximized(true);
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.setScene(scene);
-        stage.setTitle("login");
+        stage.setTitle("Luna Chat"); //
         stage.show();
     }
 

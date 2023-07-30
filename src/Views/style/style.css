@@ -1,0 +1,77 @@
+.container {
+  -fx-background-color: #e23e57;
+  -fx-background-radius: 10px;
+}
+
+.round-style {
+  -fx-background-color: blue;
+  -fx-background-radius: 10px;
+}
+
+.selected {
+  -fx-background-color: white;
+}
+
+.mouse-moved:hover {
+  -fx-background-color: pink;
+}
+
+.field {
+  -fx-background-color: transparent;
+  -fx-border-width: 0 0 2 0;
+  -fx-border-style: solid;
+  -fx-border-color: white;
+}
+
+.field:current {
+  -fx-border-color: blue;
+}
+
+/* Create style for the text field */
+
+.message-text {
+  -fx-background-color: pink;
+  -fx-background-radius: 20px;
+}
+
+/* Window style */
+
+.windows {
+  -fx-background-color: white;
+}
+
+
+.list-view{
+  -fx-background-color: transparent;
+}
+
+.list-cell {
+  -fx-control-inner-background: #e23e57 ;
+  -fx-control-inner-background-alt: derive(-fx-control-inner-background, 0%);
+  -fx-padding: 15px;
+}
+
+.list-view .list-cell:selected{
+  -fx-background-color: #f0e9eabd;
+}
+
+/* styles.css */
+.scroll-bar:vertical {
+  -fx-background-color: #e23e579f; /* Background color of the vertical scrollbar */
+}
+
+.scroll-bar:vertical thumb {
+  -fx-background-color: white; /* Color of the scrollbar thumb (the draggable handle) */
+}
+
+.scroll-bar:vertical thumb:hover {
+  -fx-background-color: transparent; /* Color of the scrollbar thumb when hovered */
+}
+
+.scroll-bar:vertical track {
+  -fx-background-color: #d0d0d0; /* Color of the track (the area behind the thumb) */
+}
+
+.scroll-bar:vertical track-background {
+  -fx-background-color: red; /* Color of the track background (the area outside the track) */
+}

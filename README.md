@@ -16,3 +16,12 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+## How to setup the JavaFX modules
+- Extract the javafx SDK to prefered location
+- Create a configuration in the project, for this project, I used vscode.
+- Setup the vmArgs as shown below.👇
+```
+"vmArgs": "--module-path <Path to javafx sdk> --add-modules javafx.controls,javafx.fxml",
+```
+
