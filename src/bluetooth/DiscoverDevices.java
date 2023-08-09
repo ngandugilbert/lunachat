@@ -3,17 +3,19 @@ package bluetooth;
 import java.util.LinkedList;
 import javax.bluetooth.*;
 
-public class DiscoverDevices {
+public class DiscoverDevices implements Runnable {
     // list of discovered devices
-    static LinkedList<RemoteDevice> discoveredDevices;
+    private LinkedList<RemoteDevice> discoveredDevices;
+    private boolean started;
 
-    public static LinkedList<RemoteDevice> getDiscoveredDevices() {
+    public LinkedList<RemoteDevice> getDiscoveredDevices() {
         return discoveredDevices;
     }
 
-    final static Object inquiryCompletedEvent = new Object();
+    final Object inquiryCompletedEvent = new Object();
 
-    public static void discover() throws BluetoothStateException, InterruptedException {
+    @Override
+    public void run() {
         discoveredDevices = new LinkedList<>();
         DiscoveryListener listener = new DiscoveryListener() {
 
@@ -37,10 +39,21 @@ public class DiscoverDevices {
         };
 
         synchronized (inquiryCompletedEvent) {
-            boolean started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC,
-                    listener);
+
+            try {
+                started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC,
+                        listener);
+            } catch (BluetoothStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             if (started) {
-                inquiryCompletedEvent.wait();
+                try {
+                    inquiryCompletedEvent.wait();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
 

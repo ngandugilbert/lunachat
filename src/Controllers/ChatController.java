@@ -10,6 +10,7 @@ import javax.bluetooth.RemoteDevice;
 
 import Models.User;
 import bluetooth.DiscoverDevices;
+import bluetooth.Server;
 import data.Authentication;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,9 +31,11 @@ public class ChatController implements Initializable {
     @FXML
     private Circle avatar;
 
-
     @FXML
     private MenuButton profile;
+
+    @FXML
+    private Label hostName;
 
     private LinkedList<RemoteDevice> devices = new LinkedList<>();
 
@@ -53,17 +56,28 @@ public class ChatController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
 
-        // setting up the avatar
-        Image avatarImage = new Image("/Views/assets/login.png");
-        
-        avatar.setFill(new ImagePattern(avatarImage));
-
-
-        this.user = Authentication.getLoggedUser();
-        profile.setText(user.getName());
+        setAvatar();
+        updateUser();
         fetchDevices();
+        populateDevices();
 
         // How to change the style of the cell
+
+    }
+
+    private void setAvatar() {
+        // setting up the avatar
+        Image avatarImage = new Image("/Views/assets/login.png");
+
+        avatar.setFill(new ImagePattern(avatarImage));
+    }
+
+    private void updateUser() {
+        this.user = Authentication.getLoggedUser();
+        profile.setText(user.getName());
+    }
+
+    private void populateDevices() {
         serverList.setCellFactory(list -> new ListCell<RemoteDevice>() {
             @Override
             protected void updateItem(RemoteDevice item, boolean empty) {
@@ -83,6 +97,33 @@ public class ChatController implements Initializable {
             }
         });
         serverList.getItems().addAll(devices);
+    }
+
+    @FXML
+    private void refreshDevices() {
+        fetchDevices();
+        populateDevices();
+        System.out.println("refereshed!");
+    }
+
+    @FXML
+    private void logout() {
+        // logs the user out of the chatapp
+
+        devices.clear();
+        profile.setText("Guest");
+        serverList.getItems().clear();
+        System.out.println("loggedout");
+
+    }
+
+    // 
+    @FXML
+    private void host() {
+        System.out.println("Starting server...");
+        var server = new Server();
+        server.start();
+        hostName.setText(server.getServerName());
     }
 
 }

@@ -70,7 +70,7 @@ public class Authentication {
                 // Execute the SQL statement
                 statement.executeUpdate();
 
-                if(login(username, password))
+                if (login(username, password))
                     return true;
                 return false; // account is created but failed to login
             } catch (SQLException error) {
@@ -93,5 +93,10 @@ public class Authentication {
         } catch (SQLException e) {
             // Handle this event bro
         }
+    }
+
+    // logout the user
+    public static void logout() {
+        loggedUser = null;
     }
 }

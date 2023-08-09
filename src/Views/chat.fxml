@@ -9,6 +9,8 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -19,7 +21,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="746.0" prefWidth="1280.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ChatController">
    <children>
-      <AnchorPane layoutX="14.0" layoutY="75.0" prefHeight="1080.0" prefWidth="250.0" style="-fx-background-color: #e23e57;" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="1.0" prefHeight="1080.0" prefWidth="250.0" style="-fx-background-color: #e23e57;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox alignment="CENTER" layoutX="47.5" layoutY="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
             <VBox alignment="CENTER" layoutX="57.0" layoutY="644.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -31,11 +33,20 @@
             <VBox layoutX="-3.0" layoutY="578.0" />
             <VBox accessibleRole="CONTEXT_MENU" alignment="TOP_CENTER" layoutY="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="304.0" text="Chats" textFill="#fffbfb" VBox.vgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
+                  <HBox alignment="CENTER" prefHeight="56.0" prefWidth="175.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="78.0" text="Chats" textFill="#fffbfb">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/chat%20(3).png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                   <Line endX="10.0" startX="-100.0" stroke="WHITE">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
@@ -51,7 +62,17 @@
             <HBox alignment="CENTER" layoutX="14.0" layoutY="120.0" prefHeight="40.0" prefWidth="274.0" spacing="5.0" style="-fx-background-color: #f0e9eabd; -fx-background-radius: 5;" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
                <children>
                   <TextField promptText="Search for chat" style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" style="-fx-background-color: e23e57; -fx-text-fill: White;" text="Search" />
+                  <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: White;">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/magnifying-glass%20(1).png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
                <padding>
                   <Insets left="5.0" right="5.0" />
@@ -74,14 +95,17 @@
                      <children>
                         <MenuButton fx:id="profile" contentDisplay="CENTER" mnemonicParsing="false" popupSide="RIGHT" prefHeight="39.0" prefWidth="125.0" style="-fx-background-color: transparent; -fx-text-fill: whitesmoke;" text="Guest" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                           <items>
-                            <MenuItem fx:id="host" mnemonicParsing="false" text="Become host" />
-                            <MenuItem fx:id="logout" mnemonicParsing="false" text="Logout" />
+                            <MenuItem fx:id="host" mnemonicParsing="false" onAction="#host" text="Become host" />
+                            <MenuItem mnemonicParsing="false" onAction="#logout" text="Logout" />
                           </items>
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </MenuButton>
-                        <Label prefHeight="17.0" prefWidth="126.0" text="Hosting">
+                        <Label fx:id="hostName" prefHeight="17.0" prefWidth="126.0" text="Not hosting">
                            <padding>
                               <Insets left="12.0" />
                            </padding>
@@ -94,41 +118,28 @@
       </AnchorPane>
       <AnchorPane layoutX="1148.0" layoutY="225.0" prefHeight="200.0" prefWidth="250.0" style="-fx-background-color: #e23e57;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" layoutY="18.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
-               <children>
-                  <VBox alignment="CENTER">
-                     <children>
-                        <Label text="Discover" textFill="#fffbfb">
-                           <font>
-                              <Font name="System Bold" size="24.0" />
-                           </font>
-                        </Label>
-                        <Line endX="10.0" startX="-100.0" stroke="WHITE">
-                           <VBox.margin>
-                              <Insets bottom="10.0" top="10.0" />
-                           </VBox.margin>
-                        </Line>
-                     </children>
-                  </VBox>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Connect to new servers" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
             <VBox layoutX="7.0" layoutY="628.0" spacing="10.0" AnchorPane.bottomAnchor="50.0" />
             <ListView fx:id="serverList" layoutX="5.0" layoutY="195.0" prefHeight="415.0" prefWidth="240.0" stylesheets="@style/style.css" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
                <styleClass>
                   <String fx:value="list-cell" />
                   <String fx:value="scroll-bar" />
                </styleClass></ListView>
-            <VBox layoutX="15.0" layoutY="113.0" spacing="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+            <VBox layoutX="15.0" layoutY="126.0" spacing="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="40.0" prefWidth="220.0" spacing="5.0" style="-fx-background-color: #f0e9eabd; -fx-background-radius: 5;">
+                  <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="204.0" spacing="5.0" style="-fx-background-color: #f0e9eabd; -fx-background-radius: 5;">
                      <children>
-                        <TextField promptText="Search for a server" style="-fx-background-color: transparent;" />
-                        <Button mnemonicParsing="false" style="-fx-background-color: e23e57; -fx-text-fill: white;" text="Search" />
+                        <TextField prefHeight="25.0" prefWidth="162.0" promptText="Search for a server" style="-fx-background-color: transparent;" />
+                        <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="25.0" style="-fx-background-color: transparent; -fx-text-fill: white;">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" smooth="false">
+                                 <image>
+                                    <Image url="@assets/magnifying-glass%20(1).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                      </children>
                   </HBox>
                   <Label text="Discovered servers" textFill="WHITE">
@@ -138,15 +149,51 @@
                   </Label>
                </children>
             </VBox>
-            <Button layoutX="15.0" layoutY="643.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="228.0" style="-fx-background-color: #f0e9eabd; -fx-text-fill: e23e57;" text="Refresh Servers" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+            <Button layoutX="15.0" layoutY="643.0" mnemonicParsing="false" onAction="#refreshDevices" prefHeight="40.0" prefWidth="228.0" style="-fx-background-color: #f0e9eabd; -fx-text-fill: e23e57;" text="Refresh Servers" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
+            <VBox accessibleRole="CONTEXT_MENU" alignment="TOP_CENTER" layoutX="21.0" layoutY="14.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="56.0" prefWidth="175.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="114.0" text="Discover" textFill="#fffbfb">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/compass.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <Line endX="10.0" startX="-100.0" stroke="WHITE">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Line>
+                  <Label alignment="CENTER" text="Find  more to talk to" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="254.0" layoutY="-1.0" prefHeight="746.0" prefWidth="770.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="254.0" AnchorPane.rightAnchor="256.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="254.0" prefHeight="746.0" prefWidth="774.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="254.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER" layoutX="20.0" layoutY="612.0" prefHeight="64.0" prefWidth="730.0" spacing="10.0" styleClass="message-container" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0">
                <children>
-                  <TextField prefHeight="49.0" prefWidth="598.0" promptText="Start typing...." style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS" />
-                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="65.0" style="-fx-background-radius: 25; -fx-background-color: #e23e57;" text="Send" textFill="#f5f5f5">
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@assets/text.png" />
+                     </image>
+                  </ImageView>
+                  <TextField prefHeight="49.0" prefWidth="528.0" promptText="Start typing...." style="-fx-background-color: transparent;" HBox.hgrow="ALWAYS" />
+                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="65.0" style="-fx-background-radius: 25; -fx-background-color: #e23e57;" textFill="#f5f5f5">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -156,13 +203,20 @@
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
+                     <graphic>
+                        <ImageView fitHeight="38.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/send.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
                </children>
                <padding>
                   <Insets bottom="10.0" left="40.0" right="20.0" top="10.0" />
                </padding>
             </HBox>
-            <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="112.0" prefWidth="777.0" styleClass="header" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane layoutX="5.0" layoutY="14.0" prefHeight="112.0" prefWidth="740.0" styleClass="header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="17.0" spacing="10.0" AnchorPane.bottomAnchor="15.0" AnchorPane.topAnchor="15.0">
                      <children>

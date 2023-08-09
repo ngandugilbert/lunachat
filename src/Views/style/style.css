@@ -1,6 +1,6 @@
 .container {
-  -fx-background-color: #e23e57;
-  -fx-background-radius: 10px;
+  -fx-background-color: #e23e575d;
+  /* -fx-background-radius: 10px; */
 }
 
 .round-style {
@@ -45,13 +45,11 @@
 }
 
 .list-cell {
-  -fx-control-inner-background: #e23e57;
-  -fx-control-inner-background-alt: derive(-fx-control-inner-background, 0%);
+  -fx-control-inner-background: white;
   -fx-padding: 10px;
+  -fx-margin: 5px; /* Add margin to create spacing between cells */
   -fx-font-size: 14px;
   -fx-font-weight: 400;
-  -fx-cursor: hand;
-
 }
 
 .list-view .list-cell:selected {
@@ -67,7 +65,7 @@
 
 /* styles.css */
 .scroll-bar:vertical {
-  -fx-background-color: #e23e579f; /* Background color of the vertical scrollbar */
+  -fx-background-color: white; /* Background color of the vertical scrollbar */
 }
 
 .scroll-bar:vertical thumb {
@@ -94,12 +92,131 @@
   -fx-background-radius: 50%;
 }
 
-.message-container{
-  -fx-background-color:  #89304e93;
+.message-container {
+  -fx-background-color: #89304e93;
   -fx-background-radius: 40px;
   -fx-font-size: 16px;
 }
 
-.header{
+.header {
   -fx-background-color: #311d40;
+}
+
+/* Split pane */
+/* Remove border from the SplitPane's divider */
+.split-pane:vertical > .split-pane-divider {
+  -fx-border-width: 0;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+  -fx-border-width: 0;
+}
+
+/* Optional: Remove border from the SplitPane's content areas */
+.split-pane .split-pane-divider {
+  -fx-border-width: 0;
+}
+
+.split-pane .split-pane-divider .draggable {
+  -fx-border-width: 0;
+}
+
+/* This is style for the scrollpane */
+.scroll-pane {
+  -fx-background-color: #f3f8fb; /* Background color of the ScrollPane */
+  -fx-border-color: transparent; /* Border color */
+  -fx-border-width: 0; /* Border width */
+  -fx-background-radius: 10px; /* Border radius for rounded corners */
+}
+/* Set the inner background color of the content area to transparent */
+.scroll-pane .viewport {
+  -fx-background-color: transparent; /* Set the background color of the content area to transparent */
+}
+
+/* Style the ScrollBars */
+.scroll-bar:vertical {
+  -fx-background-color: white; /* Background color of the vertical scrollbar */
+  -fx-background-insets: 0; /* Remove any insets */
+  -fx-opacity: 0;
+}
+
+.scroll-bar:horizontal {
+  -fx-background-color: #f2f2f2; /* Background color of the horizontal scrollbar */
+  -fx-background-insets: 0; /* Remove any insets */
+}
+
+.scroll-bar:vertical thumb {
+  -fx-background-color: #cccccc; /* Color of the scrollbar thumb (the draggable handle) */
+}
+
+.scroll-bar:horizontal thumb {
+  -fx-background-color: #cccccc; /* Color of the scrollbar thumb (the draggable handle) */
+}
+
+.scroll-bar:vertical track,
+.scroll-bar:horizontal track {
+  -fx-background-color: transparent; /* Color of the track (the area behind the thumb) */
+}
+
+.scroll-bar:vertical track-background,
+.scroll-bar:horizontal track-background {
+  -fx-background-color: transparent; /* Color of the track background (the area outside the track) */
+}
+
+.chat-room-card {
+  -fx-background-color: white;
+  -fx-background-radius: 8px;
+  /* set cursor to hand */
+  -fx-cursor: hand;
+
+}
+/* create hover effect on chat-room-card */
+.chat-room-card:hover {
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 8px;
+  /* create change size on hover effect */
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 0);
+}
+/* create selected effect on chat-room-card */
+.chat-room-card:selected {
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 8px;
+  /* create change size on hover effect */
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 0);
+}
+
+.chat-room-connect-button {
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 25px;
+  /* set cursor to hand */
+  -fx-cursor: hand;
+
+  /* Create click effect on click */
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 0);
+}
+/* Create on click effect on the button */
+.chat-room-connect-button:pressed {
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 20px;
+  /* set cursor to hand */
+  -fx-cursor: hand;
+
+  /* Create click effect on click */
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 0);
+}
+
+.chat-room-card-image {
+  /* set the fill color to black */
+  -fx-fill: #3eb798;
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+}
+
+.chat-room-name {
+  -fx-font-size: 14px;
+  -fx-text-fill: #3eb798;
+  /* set font weight to bold */
+  -fx-font-weight: bold;
+  /* change font family to poppins */
+  -fx-font-family: "Poppins";
 }

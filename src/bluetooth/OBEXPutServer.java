@@ -9,7 +9,7 @@ import javax.obex.*;
 
 public class OBEXPutServer {
 
-    static final String serverUUID = "11111111111111111111111111111123";
+    static final String serverUUID = "33444";
 
     public static void main(String[] args) throws IOException {
 
@@ -17,6 +17,7 @@ public class OBEXPutServer {
 
         SessionNotifier serverConnection = (SessionNotifier) Connector.open("btgoep://localhost:"
                 + serverUUID + ";name=ObexExample");
+                System.out.println(serverConnection.getClass().getName());
 
         int count = 0;
         while(count < 2) {
