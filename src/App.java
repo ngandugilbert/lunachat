@@ -17,7 +17,7 @@ public class App extends Application {
         scene.getStylesheets().add(getClass().getResource("Views/style/style.css").toExternalForm());
         stage.setMaximized(true);
         stage.setMinWidth(800);
-        stage.setMinHeight(600);
+        stage.setMinHeight(600); 
         stage.setScene(scene);
         stage.setTitle("Luna Chat"); //
         stage.show();

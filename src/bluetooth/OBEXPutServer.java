@@ -17,7 +17,6 @@ public class OBEXPutServer {
 
         SessionNotifier serverConnection = (SessionNotifier) Connector.open("btgoep://localhost:"
                 + serverUUID + ";name=ObexExample");
-                System.out.println(serverConnection.getClass().getName());
 
         int count = 0;
         while(count < 2) {

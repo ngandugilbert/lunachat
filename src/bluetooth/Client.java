@@ -5,25 +5,23 @@ import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.obex.*;
 
-public class ObexPutClient {
+public class Client {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        String serverURL = null; //"btgoep://5C879CB41030:6";
-        if ((args != null) && (args.length > 0)) {
-            serverURL = args[0];
-        }
+        String serverURL = null; // "btgoep://5C879CB41030:6";
+       
         if (serverURL == null) {
             String[] searchArgs = null;
             // Connect to OBEXPutServer from examples
-            searchArgs = new String[] { "5C879CB41030" };
-            ServicesSearch.main(searchArgs);
-            if (ServicesSearch.serviceFound.size() == 0) {
+            searchArgs = new String[] { "5C879CB41030", "5C879CB41030" };
+            FindService.main(searchArgs);
+            if (FindService.serviceFound.size() == 0) {
                 System.out.println("OBEX service not found");
                 return;
             }
             // Select the first service found
-            serverURL = (String) ServicesSearch.serviceFound.elementAt(0);
+            serverURL = (String) FindService.serviceFound.elementAt(0);
         }
 
         System.out.println("Connecting to " + serverURL);
