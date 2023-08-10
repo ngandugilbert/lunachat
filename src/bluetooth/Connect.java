@@ -2,45 +2,28 @@ package bluetooth;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 
 public class Connect {
+    private static StreamConnection connection;
 
-    public static void main(String[] args) {
-        String deviceAddress = "48137E1527E2"; // Replace with the actual device address
+    // getter for the connection
+    public static StreamConnection getConnection() {
+        return connection;
+    }
 
-
-        String connectionString = "btspp://" + deviceAddress + ":3" 
-                + ";authenticate=false;encrypt=false;master=false";
-
+    public static void connect(String address) {
+        connection = null; // set the connection to null
         try {
-            // Open a Bluetooth connection
-            StreamConnection connection = (StreamConnection) Connector.open(connectionString);
+            // String deviceAddress = "48137E1527E2"; // Replace with the actual device address
+            String connectionString = "btspp://" + address + ":3";
 
-            // Get the input and output streams for data transfer
-            InputStream inputStream = connection.openInputStream();
-            OutputStream outputStream = connection.openOutputStream();
+            StreamConnection streamConnection = (StreamConnection) Connector.open(connectionString);
+            connection = streamConnection; // set the connection to the streamConnection
 
-            // Example: Send data to the device
-            String message = "Hello, Bluetooth Device!";
-            byte[] messageBytes = message.getBytes();
-            outputStream.write(messageBytes);
-            outputStream.flush();
+            // Now you can use the streamConnection to send/receive data with the device
 
-            // Example: Receive data from the device
-            byte[] buffer = new byte[1024];
-            int bytesRead = inputStream.read(buffer);
-            String receivedMessage = new String(buffer, 0, bytesRead);
-            System.out.println("Received: " + receivedMessage);
-
-            // Close the connection
-            inputStream.close();
-            outputStream.close();
-            connection.close();
-        } catch (IOException e) {
+            streamConnection.close(); // Close the connection when done
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -7,7 +7,9 @@ import java.util.ResourceBundle;
 
 import javax.bluetooth.RemoteDevice;
 
+import bluetooth.Connect;
 import bluetooth.DiscoverDevices;
+import bluetooth.FindService;
 import bluetooth.Server;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -140,18 +142,19 @@ public class ChatControllerNew implements Initializable {
     @FXML
     private boolean connectDevice() {
         // connect to the selected device using bluetooth
+        Connect.connect(selectedDevice.getBluetoothAddress());
         try {
-            if (selectedDevice.authenticate()) {
-                // print the device name
-                System.out.println("Connected to " + selectedDevice.getFriendlyName(false));
-                return true;
+            if(FindService.find(selectedDevice)){
+                System.out.println("found service");
+            }else{
+                System.out.println("service not found");
             }
-
         } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        // print the device name
-        System.out.println("failed to connect");
         return false;
+
     }
 
     @FXML

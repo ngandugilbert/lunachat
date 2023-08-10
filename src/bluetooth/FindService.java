@@ -1,49 +1,55 @@
+package bluetooth;
+
 import javax.bluetooth.*;
-import com.intel.bluetooth.*;
 
-public class ServiceFinder {
-    public static void main(String[] args) {
-        try {
-            LocalDevice localDevice = LocalDevice.getLocalDevice();
-            DiscoveryAgent discoveryAgent = localDevice.getDiscoveryAgent();
+public class FindService {
 
-            // Replace with the actual Bluetooth address of the device
-            String targetDeviceAddress = "XX:XX:XX:XX:XX:XX"; // Replace with the target device's address
+    public static boolean find(RemoteDevice device) throws Exception {
+        LocalDevice localDevice = LocalDevice.getLocalDevice();
+        DiscoveryAgent agent = localDevice.getDiscoveryAgent();
+        
+        UUID[] uuidSet = { new UUID(0x1105) }; // OBEX Object Push service
+        int[] attrIDs = { 0x0100 }; // Service name attribute ID
+        
+        final Object serviceSearchCompletedEvent = new Object();
+        final boolean[] serviceFound = { false }; // Using an array to make it mutable
+        
+        DiscoveryListener listener = new DiscoveryListener() {
+            public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {}
+            public void inquiryCompleted(int discType) {}
+            public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
+                for (ServiceRecord record : servRecord) {
+                    String url = record.getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+                    if (url == null) {
+                        continue;
+                    }
 
-            RemoteDevice remoteDevice = discoveryAgent.getRemoteDevice(new BluetoothAddress(targetDeviceAddress));
+                    DataElement serviceName = record.getAttributeValue(0x0100);
 
-            UUID obexServiceUUID = new UUID("0000110500001000800000805F9B34FB", false); // OBEX Object Push service
-
-            discoveryAgent.searchServices(null, new UUID[]{obexServiceUUID}, new RemoteDevice[]{remoteDevice}, new DiscoveryListener() {
-                @Override
-                public void deviceDiscovered(RemoteDevice remoteDevice, DeviceClass deviceClass) {
-                    System.out.println("Device discovered: " + remoteDevice.getBluetoothAddress());
-                }
-
-                @Override
-                public void inquiryCompleted(int discType) {
-                    System.out.println("Device discovery completed.");
-                }
-
-                @Override
-                public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
-                    for (ServiceRecord record : servRecord) {
-                        String url = record.getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
-                        System.out.println("Service URL: " + url);
+                    if (serviceName != null) {
+                        serviceFound[0] = true;
+                        System.out.println("Service " + serviceName.getValue() + " found at " + url);
+                        System.out.println("Connecting...");
+                    } else {
+                        System.out.println("Service not found at " + url);
                     }
                 }
-
-                @Override
-                public void serviceSearchCompleted(int transID, int respCode) {
-                    if (respCode == DiscoveryListener.SERVICE_SEARCH_COMPLETED) {
-                        System.out.println("Service search completed.");
-                    } else if (respCode == DiscoveryListener.SERVICE_SEARCH_TERMINATED) {
-                        System.out.println("Service search terminated.");
-                    }
+            }
+            
+            public void serviceSearchCompleted(int transID, int respCode) {
+                System.out.println("Service search completed!");
+                synchronized (serviceSearchCompletedEvent) {
+                    serviceSearchCompletedEvent.notifyAll();
                 }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+            }
+        };
+        
+        agent.searchServices(attrIDs, uuidSet, device, listener);
+        
+        synchronized (serviceSearchCompletedEvent) {
+            serviceSearchCompletedEvent.wait();
         }
+        
+        return serviceFound[0];
     }
 }
