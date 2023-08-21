@@ -36,7 +36,6 @@
                   </Label>
                </children>
             </VBox>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="476.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fitHeight="322.0" fitWidth="455.0" layoutX="156.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="308.0" AnchorPane.leftAnchor="156.0" AnchorPane.rightAnchor="141.0" AnchorPane.topAnchor="170.0">
                <image>
                   <Image url="@assets/undraw_Chat_re_re1u.png" />
@@ -44,7 +43,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="542.0" style="-fx-background-color: #e23e57;">
+      <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="542.0" style="-fx-background-color: #f3f8fb;" stylesheets="@style/style.css">
          <children>
             <AnchorPane layoutX="42.0" layoutY="6.0" prefHeight="800.0" prefWidth="542.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -54,21 +53,21 @@
                            <children>
                               <VBox alignment="CENTER">
                                  <children>
-                                    <Label alignment="CENTER" text="Signup" textFill="WHITE">
+                                    <Label alignment="CENTER" text="Signup" textFill="#3eb798">
                                        <font>
                                           <Font name="System Bold" size="36.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </VBox>
-                              <Line endX="60.0" startX="-100.0" stroke="WHITE">
+                              <Line endX="60.0" startX="-100.0" stroke="#3eb798">
                                  <VBox.margin>
                                     <Insets top="20.0" />
                                  </VBox.margin>
                               </Line>
                            </children>
                         </VBox>
-                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="448.0" text="Enter your credentials to start chatting" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="448.0" text="Enter your credentials to start chatting" textFill="#3eb798" VBox.vgrow="ALWAYS">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -83,14 +82,14 @@
                      <children>
                         <VBox prefHeight="270.0" prefWidth="382.0">
                            <children>
-                              <VBox prefHeight="66.0" prefWidth="360.0">
+                              <VBox prefHeight="66.0" prefWidth="360.0" spacing="4.0">
                                  <children>
-                                    <Label fx:id="fullName" text="Full name" textFill="#f5f5f5">
+                                    <Label fx:id="fullName" text="full name" textFill="#3eb798">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="signUpfullname" prefHeight="50.0" prefWidth="347.0" promptText="Enter your full name" styleClass="field" stylesheets="@style/style.css">
+                                    <TextField fx:id="signUpfullname" prefHeight="50.0" prefWidth="347.0" promptText="Enter your full name" style="-fx-background-color: white;" styleClass="field" stylesheets="@style/style.css">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -98,14 +97,14 @@
                                           <Cursor fx:constant="TEXT" />
                                        </cursor>
                                     </TextField>
-                                    <VBox prefHeight="66.0" prefWidth="360.0">
+                                    <VBox prefHeight="66.0" prefWidth="360.0" spacing="4.0">
                                        <children>
-                                          <Label text="username" textFill="#f5f5f5">
+                                          <Label text="username" textFill="#3eb798">
                                              <font>
                                                 <Font size="18.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="signUpusername" prefHeight="50.0" prefWidth="347.0" promptText="Enter your username" styleClass="field" stylesheets="@style/style.css">
+                                          <TextField fx:id="signUpusername" prefHeight="50.0" prefWidth="347.0" promptText="Enter your username" style="-fx-background-color: white;" styleClass="field" stylesheets="@style/style.css">
                                              <font>
                                                 <Font size="18.0" />
                                              </font>
@@ -120,14 +119,14 @@
                                     </VBox>
                                  </children>
                               </VBox>
-                              <VBox>
+                              <VBox spacing="4.0">
                                  <children>
-                                    <Label text="password" textFill="#f5f5f5">
+                                    <Label text="password" textFill="#3eb798">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <PasswordField fx:id="signUpPassword" prefHeight="50.0" prefWidth="347.0" promptText="Enter your password" styleClass="field" stylesheets="@style/style.css">
+                                    <PasswordField fx:id="signUpPassword" prefHeight="50.0" prefWidth="347.0" promptText="Enter your password" style="-fx-background-color: white;" styleClass="field" stylesheets="@style/style.css">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -145,7 +144,7 @@
                               </VBox>
                            </children>
                         </VBox>
-                        <Button mnemonicParsing="false" onAction="#submitSignup" prefHeight="45.0" prefWidth="382.0" style="-fx-background-color: #311d40; -fx-font-weight: bold;" text="Submit" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <Button mnemonicParsing="false" onAction="#submitSignup" prefHeight="45.0" prefWidth="382.0" style="-fx-background-color: #3eb798; -fx-font-weight: bold;" text="Submit" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -160,12 +159,12 @@
                   </VBox>
                   <HBox alignment="CENTER" layoutY="583.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Label alignment="CENTER" text="Already have an account? " textFill="#f5f5f5">
+                        <Label alignment="CENTER" text="Already have an account? " textFill="#3eb798">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Button fx:id="login_switch" alignment="CENTER" mnemonicParsing="false" onAction="#loginSwitch" style="-fx-background-color: transparent;" text="Login" textFill="WHITE">
+                        <Button fx:id="login_switch" alignment="CENTER" mnemonicParsing="false" onAction="#loginSwitch" style="-fx-background-color: transparent;" text="Login" textFill="#3eb798">
                            <font>
                               <Font name="System Bold" size="19.0" />
                            </font>

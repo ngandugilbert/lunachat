@@ -19,10 +19,10 @@ public class LoginController {
     private PasswordField password;
 
     @FXML
-    private Label Loginstatus;
+    private Label LoginStatus;
 
     @FXML
-    private Label SignUpstatus;
+    private Label signUpStatus;
 
     @FXML
     private TextField username;
@@ -40,11 +40,12 @@ public class LoginController {
     void submitLogin(ActionEvent event) {
         if (Authentication.login(username.getText(), password.getText())) {
             // Login was a success
-            switchScene(event, "chat");
+            switchScene(event, "chat1");
             System.out.println("Logged in");
         } else {
             // failed to login
-            Loginstatus.setText("Username or password was incorrect! Please Try again.");
+            LoginStatus.setText("Username or password was incorrect! Please Try again.");
+            System.out.println("Login failed");
         }
     }
 
@@ -53,11 +54,12 @@ public class LoginController {
         if (Authentication.createAccount(signUpusername.getText(), signUpPassword.getText(),
                 signUpfullname.getText())) {
             // Login was a success
-            switchScene(event, "chat");
+            switchScene(event, "chat1");
             System.out.println("Logged in");
         } else {
             // failed to login
-            SignUpstatus.setText("Username or password was incorrect! Please Try again.");
+            signUpStatus = new Label();
+            signUpStatus.setText("Username or password was incorrect! Please Try again.");
         }
     }
 

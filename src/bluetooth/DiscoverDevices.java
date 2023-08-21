@@ -3,7 +3,7 @@ package bluetooth;
 import java.util.LinkedList;
 import javax.bluetooth.*;
 
-public class DiscoverDevices implements Runnable {
+public class DiscoverDevices extends Thread {
     // list of discovered devices
     private LinkedList<RemoteDevice> discoveredDevices;
     private boolean started;
@@ -14,7 +14,7 @@ public class DiscoverDevices implements Runnable {
 
     final Object inquiryCompletedEvent = new Object();
 
-    @Override
+    
     public void run() {
         discoveredDevices = new LinkedList<>();
         DiscoveryListener listener = new DiscoveryListener() {

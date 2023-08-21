@@ -1,31 +1,29 @@
+
+
+import Controllers.Bubble;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Test extends Application {
-    private static Scene scene;
 
     @Override
-    public void start(Stage stage) throws Exception {
-        // create the root
-        Parent root = FXMLLoader.load(getClass().getResource("/Views/chat1.fxml"));
+    public void start(Stage primaryStage) {
+        VBox root = new VBox();
+        
+        // Example usage of the ChatBubble class
+        Bubble userBubble = new Bubble("Hello, how are you?", true);
+        Bubble otherBubble = new Bubble("I'm doing well, thank you!", false);
 
-        // create a scene
-        scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("Views/style/style.css").toExternalForm());
-        stage.setMaximized(true);
-        stage.setMinWidth(800);
-        stage.setMinHeight(600);
-        stage.setScene(scene);
-        stage.setTitle("Luna Chat"); //
-        stage.show();
+        root.getChildren().addAll(userBubble, otherBubble);
+        
+        Scene scene = new Scene(root, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-  
     public static void main(String[] args) {
         launch(args);
     }
-
 }

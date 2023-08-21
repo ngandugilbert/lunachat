@@ -4,25 +4,48 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
-
 import javax.bluetooth.RemoteDevice;
-
-import bluetooth.Connect;
-import bluetooth.DiscoverDevices;
-import bluetooth.FindService;
+import bluetooth.Chat;
+import bluetooth.Discover;
 import bluetooth.Server;
+import data.Authentication;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 public class ChatControllerNew implements Initializable {
     @FXML
     private VBox chatRoomList;
     private LinkedList<RemoteDevice> devices;
+    private boolean isHost = false;
+    private Chat chat;
+
+    @FXML
+    private ScrollPane messageScroll;
+
+    @FXML
+    private MenuItem host;
+    @FXML
+    private Button connectBtn;
+
+    @FXML
+    private TextField message;
+
     @FXML
     private Label serverName;
 
@@ -42,41 +65,54 @@ public class ChatControllerNew implements Initializable {
     private Label serverAddress;
     private RemoteDevice selectedDevice;
 
+    @FXML
+    private VBox bubble;
+
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
         // fetch the devices
         fetchDevices();
+        updateInfo();
 
     }
 
+    @FXML
     // populate the devices vbox
     private void populateDevices() {
-        // create a card for each device
-        for (RemoteDevice device : devices) {
-            try {
-                createCard(device);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        if (devices.isEmpty()) {
+            return;
+        } else {
+            // create a card for each device
+            for (RemoteDevice device : devices) {
+                try {
+                    createCard(device);
+                } catch (IOException e) {
+                    // handle this
+                }
             }
+            // clear the list once all are added
+            devices.clear();
         }
+    }
+
+    private void updateInfo() {
+        this.profile.setText(Authentication.getLoggedUser().getUsername());
+
     }
 
     @FXML
     private void fetchDevices() {
         // create a thread to discover devices
-        DiscoverDevices discoverDevices = new DiscoverDevices();
-
-        Thread thread = new Thread(discoverDevices);
+        Discover explorer = new Discover();
+        Thread thread = new Thread(explorer);
         thread.start();
+
         // when the thread is done get the discovered devices
         try {
             thread.join();
-            devices = discoverDevices.getDiscoveredDevices();
-
-            populateDevices();
+            devices = explorer.getFoundDevices();
             // print done
-            System.out.println("done");
+            System.out.println("done fetching");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,19 +143,6 @@ public class ChatControllerNew implements Initializable {
         circle.setRadius(23);
         circle.getStyleClass().add("chat-room-card-image");
 
-        // Button connect = new Button();
-        // connect.getStyleClass().add("chat-room-connect-button");
-        // connect.setPrefHeight(40);
-        // connect.setPrefWidth(40);
-        // add an image inside the button
-        // set the image size to 25x25
-        // Image image = new
-        // Image(getClass().getResourceAsStream("/Views/assets/connection.png"));
-        // ImageView imageView = new ImageView(image);
-        // imageView.setFitHeight(25);
-        // imageView.setFitWidth(25);
-        // connect.setGraphic(imageView);
-
         chatRoomCard.getChildren().add(circle);
         chatRoomCard.getChildren().add(chatRoomDetails);
         // chatRoomCard.getChildren().add(connect);
@@ -131,30 +154,76 @@ public class ChatControllerNew implements Initializable {
             try {
                 this.selectedDevice = device;
                 serverName.setText(device.getFriendlyName(false));
+
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
+
                 e1.printStackTrace();
             }
             serverAddress.setText(device.getBluetoothAddress());
         });
     }
+    
+
+    // create a chat bubble
+    public void createChatBubble(String message, String sender) {
+        HBox messageBubble = new HBox();
+        messageBubble.getStyleClass().add("chat-bubble");
+        messageBubble.setPrefHeight(100);
+        messageBubble.setMinWidth(580);
+        messageBubble.setMinHeight(100);
+
+        messageBubble.setSpacing(10);
+
+        messageBubble.setPadding(new javafx.geometry.Insets(0, 0, 0, 20));
+
+        Label username = new Label(sender);
+        // username.getStyleClass().add("chat-bubble-header");
+        username.setMinWidth(652);
+        username.setMinHeight(40);
+        username.setStyle(username.getStyle() + "-fx-font-size: 16px; -fx-fill: black; -fx-font-weight: bold;");
+
+        HBox.setHgrow(username, javafx.scene.layout.Priority.ALWAYS);
+
+        Text messageTest = new Text(message);
+        messageTest.setWrappingWidth(700);
+        messageTest.setStyle(messageTest.getStyle() + "-fx-font-size: 14px; -fx-fill: black;-fx-background: red;");
+
+        bubble = new VBox();
+        bubble.getChildren().add(username);
+        bubble.getChildren().add(messageTest);
+        bubble.setSpacing(10);
+        messageBubble.getChildren().add(bubble);
+
+        messageScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        messageScroll.setContent(bubbleContainer);
+        bubbleContainer.getChildren().add(messageBubble);
+
+    }
 
     @FXML
-    private boolean connectDevice() {
+    private void connectDevice() {
         // connect to the selected device using bluetooth
-        Connect.connect(selectedDevice.getBluetoothAddress());
+        // Find the device
+        chat = new Chat();
+        chat.setSearchArgs(selectedDevice.getBluetoothAddress());
+        var thread = new Thread(chat);
         try {
-            if(FindService.find(selectedDevice)){
-                System.out.println("found service");
-            }else{
-                System.out.println("service not found");
+            thread.join();
+
+            if (selectedDevice == null) {
+                System.out.println("Failed");
+            } else {
+                if (chat.isSessionStarted()) {
+                    // Start session
+                    connectBtn.getStyleClass().add("chat-room-connect-button-active");
+                    System.out.println("Connected");
+                }
+
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // Something went wrong
+            System.out.println("Something happened");
         }
-        return false;
-
     }
 
     @FXML
@@ -165,13 +234,16 @@ public class ChatControllerNew implements Initializable {
 
     }
 
+    /**
+     * @param event
+     */
     @FXML
-    private void logout() {
+    private void logout(ActionEvent event) {
         // logs the user out of the chatapp
-
         devices.clear();
         profile.setText("Guest");
         chatRoomList.getChildren().clear();
+        switchScene(event, "login");
         System.out.println("loggedout");
 
     }
@@ -179,12 +251,49 @@ public class ChatControllerNew implements Initializable {
     @FXML
     private void sendMessage() {
         // send a message to the selected device
-        System.out.println("sending message");
+        if (message.getText().isEmpty()) {
+            return;
+        } else {
+            if (chat.isSessionStarted()) {
+                createChatBubble(message.getText(), "Me");
+                chat.sendMessage(message.getText());
+            }
+        }
+        message.setText("");
+
     }
 
     @FXML
     private void becomeHost() {
         // become a host
-        System.out.println("becoming host");
+        // toggle become host
+        isHost = !isHost;
+        if (isHost) {
+            hostName.setText(Authentication.getLoggedUser().getUsername() + "(Hosting)");
+            avatar.setStroke(Color.GREEN);
+            host.setText("Stop Hosting");
+        } else {
+            hostName.setText("Not Hosting");
+            avatar.setStroke(Color.RED);
+            host.setText("Become Host");
+        }
+    }
+
+    // switch to another scene
+    private void switchScene(ActionEvent event, String sceneName) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/" + sceneName + ".fxml"));
+            Parent root = loader.load();
+
+            Node node = (Node) event.getSource();
+            Scene currentScene = node.getScene();
+
+            // show the current scene
+            currentScene.setRoot(root);
+
+        } catch (IOException e) {
+            // Remember to handle this bro!
+        }
     }
 }

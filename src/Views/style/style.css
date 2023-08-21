@@ -17,10 +17,8 @@
 }
 
 .field {
-  -fx-background-color: transparent;
-  -fx-border-width: 0 0 2 0;
-  -fx-border-style: solid;
-  -fx-border-color: white;
+  -fx-background-color: white;
+  -fx-background-radius: 8px;
 }
 
 .field:current {
@@ -194,6 +192,16 @@
   /* Create click effect on click */
   -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 0);
 }
+
+.chat-room-connect-button-active{
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 25px;
+  /* set cursor to hand */
+  -fx-cursor: hand;
+
+  /* Create click effect on click */
+  -fx-effect: dropshadow(three-pass-box, rgba(7, 241, 38, 0.315), 5, 0, 0, 0);
+}
 /* Create on click effect on the button */
 .chat-room-connect-button:pressed {
   -fx-background-color: #f3f8fb;
@@ -219,4 +227,17 @@
   -fx-font-weight: bold;
   /* change font family to poppins */
   -fx-font-family: "Poppins";
+  -fx-width: 100%;
+}
+
+.chat-bubble{
+  -fx-background-color: #f3f8fb;
+  -fx-background-radius: 20px;
+}
+.chat-bubble-header{
+  -fx-background-color: white;
+  -fx-background-radius:  10px 5px 0 20px;
+  -fx-font-size: 20px;
+  -fx-font-weight: 500;
+
 }

@@ -8,22 +8,19 @@ import javax.obex.*;
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.LocalDevice;
-import javax.obex.HeaderSet;
-import javax.obex.ResponseCodes;
-import javax.obex.ServerRequestHandler;
-import javax.obex.SessionNotifier;
 
 public class Server extends Thread {
     private boolean isStarted;
     private static String SERVER_UUID;
     private final static int MAX_CONNECTIONS = 3;
+    private static SessionNotifier serverConnection;
 
     public Server() {
         try {
             SERVER_UUID = LocalDevice.getLocalDevice().getBluetoothAddress();
             System.out.println(SERVER_UUID);
         } catch (BluetoothStateException e) {
-            // Handle this bro!
+            // Handle this exception properly
         }
     }
 
@@ -32,19 +29,18 @@ public class Server extends Thread {
     }
 
     public void run() {
-
         try {
             startOBEXServer();
         } catch (IOException e) {
-            // handle this bro
+            // Handle this exception properly
         }
     }
 
     private static void startOBEXServer() throws IOException {
         LocalDevice.getLocalDevice().setDiscoverable(DiscoveryAgent.GIAC);
 
-        String connectionURL = "btgoep://localhost:" + SERVER_UUID + ";name=ObexExample";
-        SessionNotifier serverConnection = (SessionNotifier) Connector.open(connectionURL);
+        String connectionURL = "btgoep://localhost:" + SERVER_UUID + ";name=LunaChat";
+        serverConnection = (SessionNotifier) Connector.open(connectionURL);
 
         int connectionCount = 0;
         while (connectionCount < MAX_CONNECTIONS) {
@@ -79,6 +75,7 @@ public class Server extends Thread {
             String receivedData = readFromInputStream(is);
             System.out.println("got:" + receivedData);
             op.close();
+
         }
 
         private String readFromInputStream(InputStream is) throws IOException {

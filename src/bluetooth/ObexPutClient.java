@@ -9,7 +9,7 @@ public class ObexPutClient {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        String serverURL = null; //"btgoep://5C879CB41030:6";
+        String serverURL = null;//"btgoep://5C879CB41030:1";
         if ((args != null) && (args.length > 0)) {
             serverURL = args[0];
         }
