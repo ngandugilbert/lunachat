@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+
 import javax.bluetooth.RemoteDevice;
-import bluetooth.Chat;
-import bluetooth.Discover;
-import bluetooth.Server;
+
+import bluetooth.revised.Chat;
+import bluetooth.revised.Discover;
+import bluetooth.revised.Server;
 import data.Authentication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

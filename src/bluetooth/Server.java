@@ -1,91 +1,67 @@
 package bluetooth;
 
-import java.io.IOException;
-import java.io.InputStream;
+import javax.bluetooth.*;
 import javax.microedition.io.Connector;
-import javax.obex.*;
+import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
 
-import javax.bluetooth.BluetoothStateException;
-import javax.bluetooth.DiscoveryAgent;
-import javax.bluetooth.LocalDevice;
+import java.io.*;
 
-public class Server extends Thread {
-    private boolean isStarted;
-    private static String SERVER_UUID;
-    private final static int MAX_CONNECTIONS = 3;
-    private static SessionNotifier serverConnection;
+public class Server {
 
-    public Server() {
+    public static void main(String[] args) {
         try {
-            SERVER_UUID = LocalDevice.getLocalDevice().getBluetoothAddress();
-            System.out.println(SERVER_UUID);
-        } catch (BluetoothStateException e) {
-            // Handle this exception properly
-        }
-    }
+            LocalDevice localDevice = LocalDevice.getLocalDevice();
+            localDevice.setDiscoverable(DiscoveryAgent.GIAC);
 
-    public boolean isStarted() {
-        return isStarted;
-    }
+            String serviceUUID = "0000110100001000800000805F9B34FB"; // Example UUID
+            String serviceURL = "btspp://localhost:" + serviceUUID + ";name=ChatAppServer";
 
-    public void run() {
-        try {
-            startOBEXServer();
+            StreamConnectionNotifier connectionNotifier = (StreamConnectionNotifier) Connector.open(serviceURL);
+
+            System.out.println("Server is waiting for connections...");
+
+            while (true) {
+                StreamConnection connection = connectionNotifier.acceptAndOpen();
+                new ClientHandler(connection).start();
+            }
         } catch (IOException e) {
-            // Handle this exception properly
+            e.printStackTrace();
         }
     }
 
-    private static void startOBEXServer() throws IOException {
-        LocalDevice.getLocalDevice().setDiscoverable(DiscoveryAgent.GIAC);
+    private static class ClientHandler extends Thread {
+        private final StreamConnection connection;
 
-        String connectionURL = "btgoep://localhost:" + SERVER_UUID + ";name=LunaChat";
-        serverConnection = (SessionNotifier) Connector.open(connectionURL);
-
-        int connectionCount = 0;
-        while (connectionCount < MAX_CONNECTIONS) {
-            RequestHandler handler = new RequestHandler();
-            serverConnection.acceptAndOpen(handler);
-            System.out.println("Received OBEX connection " + (++connectionCount));
+        public ClientHandler(StreamConnection connection) {
+            this.connection = connection;
         }
-    }
-
-    private static class RequestHandler extends ServerRequestHandler {
 
         @Override
-        public int onPut(Operation op) {
+        public void run() {
             try {
-                processReceivedData(op);
-                return ResponseCodes.OBEX_HTTP_OK;
+                InputStream inputStream = connection.openInputStream();
+                OutputStream outputStream = connection.openOutputStream();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                PrintWriter writer = new PrintWriter(outputStream, true);
+
+                String message;
+                while ((message = reader.readLine()) != null) {
+                    System.out.println("Client says: " + message);
+
+                    // Echo the message back to the client
+                    writer.println("Server echoes: " + message);
+                }
+
+                reader.close();
+                writer.close();
+                inputStream.close();
+                outputStream.close();
+                connection.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                return ResponseCodes.OBEX_HTTP_UNAVAILABLE;
             }
-        }
-
-        private void processReceivedData(Operation op) throws IOException {
-            HeaderSet hs = op.getReceivedHeaders();
-            String name = (String) hs.getHeader(HeaderSet.NAME);
-
-            if (name != null) {
-                System.out.println("put name:" + name);
-            }
-
-            InputStream is = op.openInputStream();
-            String receivedData = readFromInputStream(is);
-            System.out.println("got:" + receivedData);
-            op.close();
-
-        }
-
-        private String readFromInputStream(InputStream is) throws IOException {
-            StringBuilder buf = new StringBuilder();
-            int data;
-            while ((data = is.read()) != -1) {
-                buf.append((char) data);
-            }
-            return buf.toString();
         }
     }
-
 }

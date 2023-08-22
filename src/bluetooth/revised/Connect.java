@@ -1,4 +1,4 @@
-package bluetooth;
+package bluetooth.revised;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;

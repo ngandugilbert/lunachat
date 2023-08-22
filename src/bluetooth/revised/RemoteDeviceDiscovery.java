@@ -1,4 +1,4 @@
-package bluetooth;
+package bluetooth.revised;
 
 import java.io.IOException;
 import java.util.Vector;
