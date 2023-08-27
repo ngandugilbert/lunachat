@@ -1,16 +1,14 @@
 package Controllers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.ResourceBundle;
-
-import javax.bluetooth.RemoteDevice;
-
-import bluetooth.revised.Chat;
+import bluetooth.LunaClient;
+import bluetooth.network.SPPClient;
+import bluetooth.network.SPPServer;
 import bluetooth.revised.Discover;
 import bluetooth.revised.Server;
 import data.Authentication;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,24 +16,41 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+import javax.bluetooth.BluetoothStateException;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.RemoteDevice;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.ResourceBundle;
+
+
 public class ChatControllerNew implements Initializable {
+
+    private SPPServer myServer;
+    private SPPClient client;
+    private String myName;
+    private String partnerName;
+    Discover explorer;
+
+    private BufferedReader in;
+    private PrintWriter out;
+
     @FXML
     private VBox chatRoomList;
-    private LinkedList<RemoteDevice> devices;
+    @FXML
+    private Label chatRoom = new Label();
+    private LinkedList<RemoteDevice> devices = new LinkedList<>();
     private boolean isHost = false;
-    private Chat chat;
 
     @FXML
     private ScrollPane messageScroll;
@@ -69,11 +84,12 @@ public class ChatControllerNew implements Initializable {
 
     @FXML
     private VBox bubble;
+    private LunaClient chatty;
 
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
-        // fetch the devices
-        fetchDevices();
+
+        initClient(); // Always start as a client
         updateInfo();
 
     }
@@ -85,39 +101,24 @@ public class ChatControllerNew implements Initializable {
             return;
         } else {
             // create a card for each device
-            for (RemoteDevice device : devices) {
-                try {
-                    createCard(device);
-                } catch (IOException e) {
-                    // handle this
+
+            Platform.runLater(() -> {
+                for (RemoteDevice device : devices) {
+                    try {
+                        createCard(device);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    chatRoom.setText("Chat Rooms");
                 }
-            }
-            // clear the list once all are added
-            devices.clear();
+            });
+
+
         }
     }
 
     private void updateInfo() {
         this.profile.setText(Authentication.getLoggedUser().getUsername());
-
-    }
-
-    @FXML
-    private void fetchDevices() {
-        // create a thread to discover devices
-        Discover explorer = new Discover();
-        Thread thread = new Thread(explorer);
-        thread.start();
-
-        // when the thread is done get the discovered devices
-        try {
-            thread.join();
-            devices = explorer.getFoundDevices();
-            // print done
-            System.out.println("done fetching");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -164,7 +165,6 @@ public class ChatControllerNew implements Initializable {
             serverAddress.setText(device.getBluetoothAddress());
         });
     }
-    
 
     // create a chat bubble
     public void createChatBubble(String message, String sender) {
@@ -204,28 +204,7 @@ public class ChatControllerNew implements Initializable {
 
     @FXML
     private void connectDevice() {
-        // connect to the selected device using bluetooth
-        // Find the device
-        chat = new Chat();
-        chat.setSearchArgs(selectedDevice.getBluetoothAddress());
-        var thread = new Thread(chat);
-        try {
-            thread.join();
-
-            if (selectedDevice == null) {
-                System.out.println("Failed");
-            } else {
-                if (chat.isSessionStarted()) {
-                    // Start session
-                    connectBtn.getStyleClass().add("chat-room-connect-button-active");
-                    System.out.println("Connected");
-                }
-
-            }
-        } catch (Exception e) {
-            // Something went wrong
-            System.out.println("Something happened");
-        }
+        connectToDevice();
     }
 
     @FXML
@@ -256,13 +235,10 @@ public class ChatControllerNew implements Initializable {
         if (message.getText().isEmpty()) {
             return;
         } else {
-            if (chat.isSessionStarted()) {
-                createChatBubble(message.getText(), "Me");
-                chat.sendMessage(message.getText());
-            }
+            sendMsg(message.getText());
+            createChatBubble(message.getText(), Authentication.getLoggedUser().getUsername());
         }
         message.setText("");
-
     }
 
     @FXML
@@ -274,6 +250,7 @@ public class ChatControllerNew implements Initializable {
             hostName.setText(Authentication.getLoggedUser().getUsername() + "(Hosting)");
             avatar.setStroke(Color.GREEN);
             host.setText("Stop Hosting");
+            startServer();
         } else {
             hostName.setText("Not Hosting");
             avatar.setStroke(Color.RED);
@@ -297,5 +274,107 @@ public class ChatControllerNew implements Initializable {
         } catch (IOException e) {
             // Remember to handle this bro!
         }
+    }
+
+    //    This method starts the server
+    public void startServer() {
+        try {
+            LocalDevice localDevice = LocalDevice.getLocalDevice();
+            System.out.print("Address: " + localDevice.getBluetoothAddress());
+            System.out.print("Name: " + localDevice.getFriendlyName());
+
+            // create an object for the server
+            myServer = new SPPServer();
+            myServer.setOnConnectionSuccessful((java.awt.event.ActionEvent e) -> {
+                in = myServer.in;
+                out = myServer.out;
+                partnerName = myServer.getPartnerName();
+                (new streamPoller()).start();
+            });
+            myServer.start();
+        } catch (BluetoothStateException e) {
+            System.err.print(e);
+        }
+    }
+
+    //    start off as a client
+    public void initClient() {
+        client = new SPPClient();
+        client.setOnDeviceDiscovery((java.awt.event.ActionEvent e) -> {
+            ObservableList<RemoteDevice> foundDevices = FXCollections.observableList(SPPClient.vecDevices);
+            this.devices.addAll(foundDevices);
+            populateDevices();
+        });
+
+        client.startDiscovery();
+
+        client.setOnConnectionFailed((java.awt.event.ActionEvent e) -> {
+            Platform.runLater(() -> {
+                serverName.setText("Could Not Connect to Server.");
+                serverAddress.setText("Something wrong happened, choose another server or try again later.");
+            });
+        });
+        client.setOnConnectionSuccessful((java.awt.event.ActionEvent e) -> {
+            in = client.in;
+            out = client.out;
+            partnerName = client.getPartnerName();
+            Platform.runLater(() -> {
+                try {
+                    serverName.setText(selectedDevice.getFriendlyName(true));
+                    serverAddress.setText(selectedDevice.getBluetoothAddress());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                serverAddress.setText("Something wrong happened, choose another server or try again later.");
+            });
+
+            (new streamPoller()).start();
+        });
+    }
+
+    // This is the streamPoller class
+    class streamPoller extends Thread {
+        public void run() {
+            boolean isRun = true;
+            while (isRun) {
+                try {
+                    if (in != null) {
+                        System.out.println("in not null");
+                        String s = in.readLine();
+                        if (s != null) Platform.runLater(() -> receivedMassage(s));
+                        else isRun = false;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void receivedMassage(String msg) {
+        createChatBubble(message.getText(), partnerName);
+    }
+
+    @FXML
+    public void refresh() {
+        chatRoom.setText("Searching...");
+        this.devices.clear();
+        chatRoomList.getChildren().clear();
+        client.startDiscovery();
+    }
+
+
+    public void connectToDevice() {
+        if (selectedDevice != null) {
+            client.connect(selectedDevice);
+        } else {
+            System.out.print("Please select a device first");
+        }
+    }
+
+    public void sendMsg(String s) {
+        System.out.println("must send " + s);
+        out.write(s + "\r\n");
+        out.flush();
     }
 }

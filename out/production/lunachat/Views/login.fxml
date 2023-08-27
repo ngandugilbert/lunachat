@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginController">
+   <children>
+      <AnchorPane prefHeight="534.0" prefWidth="271.0" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+         <children>
+            <Label alignment="CENTER" layoutY="87.0" text="Welcome to LunaChat!" textFill="#89304e" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <VBox alignment="CENTER" layoutX="14.0" layoutY="552.0">
+               <children>
+                  <Line endX="100.0" startX="-100.0" stroke="#e23e57" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="134.0" prefWidth="738.0" style="-fx-font-weight: bold;" text="LunaChat is a friendly and secure platform for connecting with others via bluetooth.Sign in with your username and password to start chatting with your friends.If you don't have an account yet, you can create one now to join the conversation!" textAlignment="CENTER" textFill="#311d40" wrapText="true" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="476.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="322.0" fitWidth="455.0" layoutX="156.0" layoutY="170.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="308.0" AnchorPane.leftAnchor="156.0" AnchorPane.rightAnchor="141.0" AnchorPane.topAnchor="170.0">
+               <image>
+                  <Image url="@assets/login.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="542.0" style="-fx-background-color: #f3f8fb;">
+         <children>
+            <AnchorPane layoutX="44.0" layoutY="14.0" prefHeight="769.0" prefWidth="442.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="44.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="14.0">
+               <children>
+                  <VBox layoutY="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="66.0" prefWidth="442.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Label alignment="CENTER" text="Login" textFill="#3eb798">
+                                       <font>
+                                          <Font name="System Bold" size="36.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <Line endX="60.0" startX="-100.0" stroke="#3eb798">
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Line>
+                           </children>
+                        </VBox>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="448.0" text="Enter your credentials to start chatting" textFill="#3eb798" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="48.0" layoutY="372.0" />
+                  <HBox alignment="CENTER" layoutY="519.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="239.0" text="Do not have an account yet? " textFill="#3eb798">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#signUpSwitch" prefHeight="50.0" prefWidth="96.0" style="-fx-background-color: transparent;" text="Signup" textFill="#3eb798">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Label fx:id="LoginStatus" alignment="CENTER" layoutY="169.0" prefHeight="34.0" prefWidth="442.0" textFill="RED" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <VBox layoutX="30.0" layoutY="216.0" prefHeight="287.0" prefWidth="382.0" spacing="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="username" textFill="#3eb798">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="username" prefHeight="50.0" prefWidth="347.0" promptText="Enter your username" style="-fx-background-color: white; -fx-background-radius: 10 10 10 10;" styleClass="field" stylesheets="@style/style.css">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="password" textFill="#3eb798">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <PasswordField fx:id="password" prefHeight="50.0" prefWidth="347.0" promptText="Enter your password" styleClass="field" stylesheets="@style/style.css">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </PasswordField>
+                           </children>
+                        </VBox>
+                        <Button mnemonicParsing="false" onAction="#submitLogin" prefHeight="45.0" prefWidth="382.0" style="-fx-background-color: #3eb798; -fx-font-weight: bold;" text="Submit" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

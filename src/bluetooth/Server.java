@@ -8,13 +8,14 @@ import javax.microedition.io.StreamConnectionNotifier;
 import java.io.*;
 
 public class Server {
+    
 
     public static void main(String[] args) {
         try {
             LocalDevice localDevice = LocalDevice.getLocalDevice();
             localDevice.setDiscoverable(DiscoveryAgent.GIAC);
 
-            String serviceUUID = "0000110100001000800000805F9B34FB"; // Example UUID
+            String serviceUUID = "60F6774F74D1"; // Example UUID
             String serviceURL = "btspp://localhost:" + serviceUUID + ";name=ChatAppServer";
 
             StreamConnectionNotifier connectionNotifier = (StreamConnectionNotifier) Connector.open(serviceURL);

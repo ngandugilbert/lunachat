@@ -8,8 +8,8 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            String serverAddress = "00:11:22:33:44:55"; // Replace with the server's address
-            String serviceUUID = "0000110100001000800000805F9B34FB"; // Example UUID
+            String serverAddress = "2839264ACBBC"; // Replace with the server's address
+            String serviceUUID = "4"; // Example UUID
             String serviceURL = "btspp://" + serverAddress + ":" + serviceUUID;
 
             StreamConnection connection = (StreamConnection) Connector.open(serviceURL);
@@ -25,6 +25,7 @@ public class Client {
 
             // Reading the server's response
             String response = reader.readLine();
+            
             System.out.println("Server response: " + response);
 
             reader.close();
