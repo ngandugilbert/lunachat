@@ -1,4 +1,4 @@
-package bluetooth.network;
+package bluetooth;
 
 import javafx.beans.property.SimpleStringProperty;
 

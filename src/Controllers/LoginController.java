@@ -40,10 +40,10 @@ public class LoginController {
     void submitLogin(ActionEvent event) {
         if (Authentication.login(username.getText(), password.getText())) {
             // Login was a success
-            switchScene(event, "chat1");
+            switchScene(event, "chat");
             System.out.println("Logged in");
         } else {
-            // failed to login
+            // failed to log in
             LoginStatus.setText("Username or password was incorrect! Please Try again.");
             System.out.println("Login failed");
         }
@@ -54,7 +54,7 @@ public class LoginController {
         if (Authentication.createAccount(signUpusername.getText(), signUpPassword.getText(),
                 signUpfullname.getText())) {
             // Login was a success
-            switchScene(event, "chat1");
+            switchScene(event, "chat");
             System.out.println("Logged in");
         } else {
             // failed to login

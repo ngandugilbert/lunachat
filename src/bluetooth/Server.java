@@ -1,68 +1,95 @@
 package bluetooth;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
 import javax.bluetooth.*;
-import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
-import javax.microedition.io.StreamConnectionNotifier;
+import javax.microedition.io.*;
 
-import java.io.*;
+/**
+ * Class that implements an SPP Server which accepts single line of
+ * message from an SPP client and sends a single line of response to the client.
+ */
+public class Server extends Thread {
 
-public class Server {
-    
+    //Create a UUID for SPP / RFComm
+    UUID uuid = new UUID("1101", true);
 
-    public static void main(String[] args) {
+    //Create the Service URL
+    String connectionString = "btspp://localhost:" + uuid + ";name=LunaChat";
+
+    String partnerName;
+    public String getPartnerName(){
+        return this.partnerName;
+    }
+
+    public BufferedReader in;
+    public PrintWriter out;
+
+    StreamConnectionNotifier streamConnNotifier;
+
+    private ActionListener onConnectionSuccessful;
+
+    public void setOnConnectionSuccessful(ActionListener onConnectionSuccessful) {
+        this.onConnectionSuccessful = onConnectionSuccessful;
+    }
+
+    //start server
+    public void run(){
         try {
-            LocalDevice localDevice = LocalDevice.getLocalDevice();
-            localDevice.setDiscoverable(DiscoveryAgent.GIAC);
+            //open server url
+            streamConnNotifier = (StreamConnectionNotifier) Connector.open(connectionString);
 
-            String serviceUUID = "60F6774F74D1"; // Example UUID
-            String serviceURL = "btspp://localhost:" + serviceUUID + ";name=ChatAppServer";
+            //Wait for client connection
+            System.out.println("\nServer Started. Waiting for clients to connect…");
+            StreamConnection connection = streamConnNotifier.acceptAndOpen();
 
-            StreamConnectionNotifier connectionNotifier = (StreamConnectionNotifier) Connector.open(serviceURL);
+            InputStream inStream = connection.openInputStream();
+            in = new BufferedReader(new InputStreamReader(inStream));
 
-            System.out.println("Server is waiting for connections...");
+            OutputStream outStream = connection.openOutputStream();
+            out = new PrintWriter(new OutputStreamWriter(outStream));
 
-            while (true) {
-                StreamConnection connection = connectionNotifier.acceptAndOpen();
-                new ClientHandler(connection).start();
-            }
+            RemoteDevice dev = RemoteDevice.getRemoteDevice(connection);
+            System.out.println("Remote device address: " + dev.getBluetoothAddress());
+            System.out.println("Remote device name: " + dev.getFriendlyName(true));
+
+            partnerName = dev.getFriendlyName(true);
+
+            if(onConnectionSuccessful != null) onConnectionSuccessful.actionPerformed(new ActionEvent(this,ActionEvent.RESERVED_ID_MAX+1,""));
+            //init in/out streams
+
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void closeConnection(){
+        try {
+            streamConnNotifier.close();
+            out.flush();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static class ClientHandler extends Thread {
-        private final StreamConnection connection;
+    public static void main(String[] args) throws IOException {
+        //display local device address and name
+        LocalDevice localDevice = LocalDevice.getLocalDevice();
+        System.out.println("Address: "+localDevice.getBluetoothAddress());
+        System.out.println("Name: "+localDevice.getFriendlyName());
 
-        public ClientHandler(StreamConnection connection) {
-            this.connection = connection;
-        }
-
-        @Override
-        public void run() {
-            try {
-                InputStream inputStream = connection.openInputStream();
-                OutputStream outputStream = connection.openOutputStream();
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                PrintWriter writer = new PrintWriter(outputStream, true);
-
-                String message;
-                while ((message = reader.readLine()) != null) {
-                    System.out.println("Client says: " + message);
-
-                    // Echo the message back to the client
-                    writer.println("Server echoes: " + message);
-                }
-
-                reader.close();
-                writer.close();
-                inputStream.close();
-                outputStream.close();
-                connection.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Server sampleSPPServer=new Server();
+        sampleSPPServer.start();
     }
+
 }

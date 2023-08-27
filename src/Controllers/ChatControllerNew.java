@@ -1,10 +1,7 @@
 package Controllers;
 
-import bluetooth.LunaClient;
-import bluetooth.network.SPPClient;
-import bluetooth.network.SPPServer;
-import bluetooth.revised.Discover;
-import bluetooth.revised.Server;
+import bluetooth.Client;
+import bluetooth.Server;
 import data.Authentication;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -36,11 +33,10 @@ import java.util.ResourceBundle;
 
 public class ChatControllerNew implements Initializable {
 
-    private SPPServer myServer;
-    private SPPClient client;
-    private String myName;
+    private Server myServer;
+    private Client client;
+
     private String partnerName;
-    Discover explorer;
 
     private BufferedReader in;
     private PrintWriter out;
@@ -49,7 +45,7 @@ public class ChatControllerNew implements Initializable {
     private VBox chatRoomList;
     @FXML
     private Label chatRoom = new Label();
-    private LinkedList<RemoteDevice> devices = new LinkedList<>();
+    private final LinkedList<RemoteDevice> devices = new LinkedList<>();
     private boolean isHost = false;
 
     @FXML
@@ -57,8 +53,6 @@ public class ChatControllerNew implements Initializable {
 
     @FXML
     private MenuItem host;
-    @FXML
-    private Button connectBtn;
 
     @FXML
     private TextField message;
@@ -81,10 +75,6 @@ public class ChatControllerNew implements Initializable {
     @FXML
     private Label serverAddress;
     private RemoteDevice selectedDevice;
-
-    @FXML
-    private VBox bubble;
-    private LunaClient chatty;
 
     @Override
     public void initialize(URL url, ResourceBundle bundle) {
@@ -190,7 +180,7 @@ public class ChatControllerNew implements Initializable {
         messageTest.setWrappingWidth(700);
         messageTest.setStyle(messageTest.getStyle() + "-fx-font-size: 14px; -fx-fill: black;-fx-background: red;");
 
-        bubble = new VBox();
+        VBox bubble = new VBox();
         bubble.getChildren().add(username);
         bubble.getChildren().add(messageTest);
         bubble.setSpacing(10);
@@ -207,25 +197,15 @@ public class ChatControllerNew implements Initializable {
         connectToDevice();
     }
 
-    @FXML
-    private void host() {
-        System.out.println("Starting server...");
-        var server = new Server();
-        server.start();
 
-    }
-
-    /**
-     * @param event
-     */
     @FXML
     private void logout(ActionEvent event) {
-        // logs the user out of the chatapp
+        // logs the user out of the chat app
         devices.clear();
         profile.setText("Guest");
         chatRoomList.getChildren().clear();
         switchScene(event, "login");
-        System.out.println("loggedout");
+        System.out.println("logged out");
 
     }
 
@@ -235,8 +215,15 @@ public class ChatControllerNew implements Initializable {
         if (message.getText().isEmpty()) {
             return;
         } else {
-            sendMsg(message.getText());
-            createChatBubble(message.getText(), Authentication.getLoggedUser().getUsername());
+            if (out != null) {
+                sendMsg(message.getText());
+                Platform.runLater(()->{
+                    createChatBubble(message.getText(), Authentication.getLoggedUser().getUsername());
+                });
+
+            } else {
+                System.out.println("You can not text at this point.");
+            }
         }
         message.setText("");
     }
@@ -284,7 +271,7 @@ public class ChatControllerNew implements Initializable {
             System.out.print("Name: " + localDevice.getFriendlyName());
 
             // create an object for the server
-            myServer = new SPPServer();
+            myServer = new Server();
             myServer.setOnConnectionSuccessful((java.awt.event.ActionEvent e) -> {
                 in = myServer.in;
                 out = myServer.out;
@@ -299,9 +286,9 @@ public class ChatControllerNew implements Initializable {
 
     //    start off as a client
     public void initClient() {
-        client = new SPPClient();
+        client = new Client();
         client.setOnDeviceDiscovery((java.awt.event.ActionEvent e) -> {
-            ObservableList<RemoteDevice> foundDevices = FXCollections.observableList(SPPClient.vecDevices);
+            ObservableList<RemoteDevice> foundDevices = FXCollections.observableList(Client.vecDevices);
             this.devices.addAll(foundDevices);
             populateDevices();
         });
