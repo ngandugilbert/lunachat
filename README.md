@@ -24,4 +24,9 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 ```
 "vmArgs": "--module-path <Path to javafx sdk> --add-modules javafx.controls,javafx.fxml",
 ```
+### How to setup the environment using IntelliJ
+- Steps are the same for getting the sdk and the rest
+- Just check this out to see how to set the VM arguments in IntelliJ
+- [Setup Intellij for javaFx](https://openjfx.io/openjfx-docs/)
+
 

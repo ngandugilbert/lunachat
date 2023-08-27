@@ -217,10 +217,6 @@ public class ChatControllerNew implements Initializable {
         } else {
             if (out != null) {
                 sendMsg(message.getText());
-                Platform.runLater(()->{
-                    createChatBubble(message.getText(), Authentication.getLoggedUser().getUsername());
-                });
-
             } else {
                 System.out.println("You can not text at this point.");
             }
@@ -312,7 +308,7 @@ public class ChatControllerNew implements Initializable {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                serverAddress.setText("Something wrong happened, choose another server or try again later.");
+                serverAddress.setText("Connected");
             });
 
             (new streamPoller()).start();
@@ -339,7 +335,7 @@ public class ChatControllerNew implements Initializable {
     }
 
     public void receivedMassage(String msg) {
-        createChatBubble(message.getText(), partnerName);
+        createChatBubble(msg, partnerName);
     }
 
     @FXML
@@ -361,6 +357,7 @@ public class ChatControllerNew implements Initializable {
 
     public void sendMsg(String s) {
         System.out.println("must send " + s);
+        createChatBubble(s, Authentication.getLoggedUser().getName());
         out.write(s + "\r\n");
         out.flush();
     }
