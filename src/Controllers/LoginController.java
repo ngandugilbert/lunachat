@@ -19,10 +19,10 @@ public class LoginController {
     private PasswordField password;
 
     @FXML
-    private Label Loginstatus;
+    private Label LoginStatus;
 
     @FXML
-    private Label SignUpstatus;
+    private Label signUpStatus;
 
     @FXML
     private TextField username;
@@ -43,8 +43,9 @@ public class LoginController {
             switchScene(event, "chat");
             System.out.println("Logged in");
         } else {
-            // failed to login
-            Loginstatus.setText("Username or password was incorrect! Please Try again.");
+            // failed to log in
+            LoginStatus.setText("Username or password was incorrect! Please Try again.");
+            System.out.println("Login failed");
         }
     }
 
@@ -57,7 +58,8 @@ public class LoginController {
             System.out.println("Logged in");
         } else {
             // failed to login
-            SignUpstatus.setText("Username or password was incorrect! Please Try again.");
+            signUpStatus = new Label();
+            signUpStatus.setText("Username or password was incorrect! Please Try again.");
         }
     }
 

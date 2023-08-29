@@ -1,82 +1,95 @@
 package bluetooth;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
-import javax.bluetooth.BluetoothStateException;
-import javax.bluetooth.DiscoveryAgent;
-import javax.bluetooth.LocalDevice;
-import javax.microedition.io.Connector;
-import javax.obex.HeaderSet;
-import javax.obex.Operation;
-import javax.obex.ResponseCodes;
-import javax.obex.ServerRequestHandler;
-import javax.obex.SessionNotifier;
+import javax.bluetooth.*;
+import javax.microedition.io.*;
 
+/**
+ * Class that implements an SPP Server which accepts single line of
+ * message from an SPP client and sends a single line of response to the client.
+ */
 public class Server extends Thread {
-    private  boolean isStarted;
-    private  String serverName;
 
-    public  String getServerName() {
-        return serverName;
+    //Create a UUID for SPP / RFComm
+    UUID uuid = new UUID("1101", true);
+
+    //Create the Service URL
+    String connectionString = "btspp://localhost:" + uuid + ";name=LunaChat";
+
+    String partnerName;
+    public String getPartnerName(){
+        return this.partnerName;
     }
 
-    public boolean isStarted() {
-        return isStarted;
+    public BufferedReader in;
+    public PrintWriter out;
+
+    StreamConnectionNotifier streamConnNotifier;
+
+    private ActionListener onConnectionSuccessful;
+
+    public void setOnConnectionSuccessful(ActionListener onConnectionSuccessful) {
+        this.onConnectionSuccessful = onConnectionSuccessful;
     }
 
-    public  void run() {
-        String name = "lunachat";
+    //start server
+    public void run(){
         try {
+            //open server url
+            streamConnNotifier = (StreamConnectionNotifier) Connector.open(connectionString);
 
-            LocalDevice.getLocalDevice().setDiscoverable(DiscoveryAgent.GIAC);
+            //Wait for client connection
+            System.out.println("\nServer Started. Waiting for clients to connect…");
+            StreamConnection connection = streamConnNotifier.acceptAndOpen();
 
-            SessionNotifier serverConnection = (SessionNotifier) Connector
-                    .open("btgoep://localhost:" + LocalDevice.getLocalDevice().getBluetoothAddress() + ";name=" + name);
-            serverName = serverConnection.getClass().getName();
+            InputStream inStream = connection.openInputStream();
+            in = new BufferedReader(new InputStreamReader(inStream));
 
-            serverConnection.getClass().getName();
-            int count = 0;
-            while (count < 2) {
-                RequestHandler handler = new RequestHandler();
-                serverConnection.acceptAndOpen(handler);
-                System.out.println("Received OBEX connection " + (++count));
-            }
-        } catch (BluetoothStateException e) {
-            // Handle this problem
-        } catch (IOException e) {
-            // handle this problem
+            OutputStream outStream = connection.openOutputStream();
+            out = new PrintWriter(new OutputStreamWriter(outStream));
+
+            RemoteDevice dev = RemoteDevice.getRemoteDevice(connection);
+            System.out.println("Remote device address: " + dev.getBluetoothAddress());
+            System.out.println("Remote device name: " + dev.getFriendlyName(true));
+
+            partnerName = dev.getFriendlyName(true);
+
+            if(onConnectionSuccessful != null) onConnectionSuccessful.actionPerformed(new ActionEvent(this,ActionEvent.RESERVED_ID_MAX+1,""));
+            //init in/out streams
+
+
+        }catch (IOException e){
+            e.printStackTrace();
         }
-
     }
 
-    private static class RequestHandler extends ServerRequestHandler {
-
-        public int onPut(Operation op) {
-            try {
-                HeaderSet hs = op.getReceivedHeaders();
-                String name = (String) hs.getHeader(HeaderSet.NAME);
-                if (name != null) {
-                    System.out.println("put name:" + name);
-                }
-
-                InputStream is = op.openInputStream();
-
-                StringBuffer buf = new StringBuffer();
-                int data;
-                while ((data = is.read()) != -1) {
-                    buf.append((char) data);
-                }
-
-                System.out.println("got:" + buf.toString());
-
-                op.close();
-                return ResponseCodes.OBEX_HTTP_OK;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseCodes.OBEX_HTTP_UNAVAILABLE;
-            }
+    public void closeConnection(){
+        try {
+            streamConnNotifier.close();
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        //display local device address and name
+        LocalDevice localDevice = LocalDevice.getLocalDevice();
+        System.out.println("Address: "+localDevice.getBluetoothAddress());
+        System.out.println("Name: "+localDevice.getFriendlyName());
+
+        Server sampleSPPServer=new Server();
+        sampleSPPServer.start();
     }
 
 }

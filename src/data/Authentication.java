@@ -43,7 +43,7 @@ public class Authentication {
 
                 return success;
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                // Something went wrong!
                 return false;
             } finally {
                 // Connect.disconnect();
